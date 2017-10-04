@@ -30,12 +30,17 @@
 *************************************************************************
 * Change Log:
 *   08/24/2017: Initial release. JME
+*   10/04/2017: Changed MSVC/GNU definitions. JME
 *************************************************************************/
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+
+#ifdef _MSC_VER
+#define sscanf sscanf_s
+#endif
 
 #define MAXIMUM_INPUT_ATTEMPTS 3 // Maximum acceptable number of user input attempts before failing.
 
@@ -85,11 +90,7 @@ bool getInput(input *in) {
 			if (strlen(s) <= 1)
 				continue;
 			// Attempt to convert from string to double, and validate.
-#ifdef __GNUC__
 			if (sscanf(s, "%lf", &value)) {
-#elif _MSC_VER
-			if (sscanf_s(s, "%lf", &value)) {
-#endif
 				if (value >= in->min && value <= in->max) {
 					// Valid value entered.
 					in->value = value;
@@ -125,11 +126,9 @@ int main(void) {
 		monthlyPayment = { "Enter monthly payment: ", 7, 0.0, 0., 9999.99 };
 	char *numPayment[3] = { "first", "second", "third" };
 
-#ifdef __GNUC__
 	// Required to make eclipse console output work properly.
 	setvbuf(stdout, NULL, _IONBF, 0);
 	fflush(stdout);
-#endif
 
 	// Get user input, calculate and display first 3 monthly loan balances.
 	if (getInput(&loanAmount) && getInput(&interestRate) && getInput(&monthlyPayment))
