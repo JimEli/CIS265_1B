@@ -80,7 +80,7 @@ bool getInput(input *in) {
 	assert(in != NULL);                             // Assert input struct not null.
 
 	// reserve temporary space for input string.
-	char *s = (char *)malloc(sizeof(char) * in->numChars + 3);
+	char *s = (char *)malloc(sizeof(char) * in->numChars + 2);
 	// Check valid.
 	if (s == NULL)
 		return false;
