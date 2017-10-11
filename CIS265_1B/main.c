@@ -23,14 +23,13 @@
 * Notes:
 *  (1) Compiled with MS Visual Studio 2017 Community (v141), using C
 *      language options and Eclipse GCC 5.3.0.
-*  (2) No attempt was made to reject values input in scientific notation.
+*  (2) Rejects values input in scientific notation.
 *  (3) MSC version uses secure sscanf_s.
 *
 * Submitted in partial fulfillment of the requirements of PCC CIS-265.
 *************************************************************************
 * Change Log:
 *   08/24/2017: Initial release. JME
-*   10/04/2017: Changed MSVC/GNU definitions. JME
 *************************************************************************/
 #include <assert.h>
 #include <stdio.h>
@@ -43,6 +42,20 @@
 #endif
 
 #define MAXIMUM_INPUT_ATTEMPTS 3 // Maximum acceptable number of user input attempts before failing.
+
+// Validate characters as a float (non-sciemtif notation).
+bool validate(char* s) {
+	static const char *valid = " 0123456789.+-\n";
+
+	assert(s != NULL);
+
+	// Iterate through string. 
+	while (*s) {
+		if (!strchr(valid, *s++))
+			return false;
+	}
+	return true;
+}
 
 // User input structure.
 typedef struct {
@@ -64,7 +77,7 @@ bool getInput(input *in) {
 	unsigned int attempts = MAXIMUM_INPUT_ATTEMPTS; // Input attempt counter.
 	bool retVal = false;                            // Return value (true = sucess, assumed failure at start).
 
-	assert(in != NULL); // Assert input struct not null.
+	assert(in != NULL);                             // Assert input struct not null.
 
 	// reserve temporary space for input string.
 	char *s = (char *)malloc(sizeof(char) * in->numChars + 3);
@@ -88,6 +101,8 @@ bool getInput(input *in) {
 		} else {
 			// Catch special case of null input.
 			if (strlen(s) <= 1)
+				continue;
+			if (!validate(s))
 				continue;
 			// Attempt to convert from string to double, and validate.
 			if (sscanf(s, "%lf", &value)) {
@@ -121,10 +136,10 @@ double calcBalance(double balance, double interest, double payment) {
 
 // Program starts here.
 int main(void) {
-	input loanAmount = { "Enter loan amount: ", 10, 0.0, 0., 1000000.00 }, 
+	char *numPayment[3] = { "first", "second", "third" };
+	input loanAmount = { "Enter loan amount: ", 10, 0.0, 0., 1000000.00 },
 		interestRate = { "Enter interest rate: ", 5, 0.0, 0., 99.99 }, 
 		monthlyPayment = { "Enter monthly payment: ", 7, 0.0, 0., 9999.99 };
-	char *numPayment[3] = { "first", "second", "third" };
 
 	// Required to make eclipse console output work properly.
 	setvbuf(stdout, NULL, _IONBF, 0);
@@ -137,4 +152,3 @@ int main(void) {
 	else
 		fputs("Invalid data recieved. Try again.\n", stderr);
 }
-
