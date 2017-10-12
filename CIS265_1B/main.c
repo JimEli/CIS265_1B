@@ -61,9 +61,9 @@ bool validate(char* s) {
 typedef struct {
 	const char *prompt;          // Input prompt string.
 	const unsigned int numChars; // Maximum number of input characters.
-	double value;                // Value of input.
-	const double min;            // Minimum acceptable value.
 	const double max;            // Maximum acceptable value.
+	const double min;            // Minimum acceptable value.
+	double value;                // Value of input.
 } input;
 
 /**********************************************
@@ -137,9 +137,9 @@ double calcBalance(double balance, double interest, double payment) {
 // Program starts here.
 int main(void) {
 	char *numPayment[3] = { "first", "second", "third" };
-	input loanAmount = { "Enter loan amount: ", 10, 0.0, 0., 1000000.00 },
-		interestRate = { "Enter interest rate: ", 5, 0.0, 0., 99.99 }, 
-		monthlyPayment = { "Enter monthly payment: ", 7, 0.0, 0., 9999.99 };
+	input loanAmount = { "Enter loan amount: ", 10, 1000000.00 },
+		interestRate = { "Enter interest rate: ", 5, 99.99 },
+		monthlyPayment = { "Enter monthly payment: ", 7, 9999.99 };
 
 	// Required to make eclipse console output work properly.
 	setvbuf(stdout, NULL, _IONBF, 0);
@@ -152,3 +152,4 @@ int main(void) {
 	else
 		fputs("Invalid data recieved. Try again.\n", stderr);
 }
+
