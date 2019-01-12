@@ -44,13 +44,15 @@
 #define MAXIMUM_INPUT_ATTEMPTS 3 // Maximum acceptable number of user input attempts before failing.
 
 // Validate characters as a float (non-sciemtif notation).
-bool validate(char* s) {
+bool validate(char* s) 
+{
 	static const char *valid = " 0123456789.+-\n";
 
 	assert(s != NULL);
 
 	// Iterate through string. 
-	while (*s) {
+	while (*s) 
+	{
 		if (!strchr(valid, *s++))
 			return false;
 	}
@@ -58,7 +60,8 @@ bool validate(char* s) {
 }
 
 // User input structure.
-typedef struct {
+typedef struct 
+{
 	const char *prompt;          // Input prompt string.
 	const unsigned int numChars; // Maximum number of input characters.
 	const double max;            // Maximum acceptable value.
@@ -72,7 +75,8 @@ typedef struct {
  * returns:    true if valid input received.
  *             false if invalid input received.
  **********************************************/
-bool getInput(input *in) {
+bool getInput(input *in) 
+{
 	double value;                                   // Temporary holder of input value.
 	unsigned int attempts = MAXIMUM_INPUT_ATTEMPTS; // Input attempt counter.
 	bool retVal = false;                            // Return value (true = sucess, assumed failure at start).
@@ -88,35 +92,48 @@ bool getInput(input *in) {
 	assert(attempts > 0); // Assert attempts is non-zero, positive value.
 
 	// Exit after too many invalid input attempts.
-	while (attempts--) {
+	while (attempts--) 
+	{
 		// Prompt and grab input.
 		fputs(in->prompt, stdout);
-		if (!fgets(s, in->numChars + 2, stdin)) {
+		if (!fgets(s, in->numChars + 2, stdin)) 
+		{
 			free(s);
 			exit(EXIT_FAILURE);
-		} else if (!strchr(s, '\n')) {
+		} 
+		else if (!strchr(s, '\n')) 
+		{
 			// input too long, eat it.
 			while (fgets(s, sizeof s, stdin) && !strchr(s, '\n'));
 			fputs("Too many characters input.\n", stdout);
-		} else {
+		} 
+		else 
+		{
 			// Catch special case of null input.
 			if (strlen(s) <= 1)
 				continue;
+		
 			if (!validate(s))
 				continue;
+			
 			// Attempt to convert from string to double, and validate.
-			if (sscanf(s, "%lf", &value)) {
-				if (value >= in->min && value <= in->max) {
+			if (sscanf(s, "%lf", &value)) 
+			{
+				if (value >= in->min && value <= in->max) 
+				{
 					// Valid value entered.
 					in->value = value;
 					retVal = true;
 					break;
-				} else
+				} 
+				else
 					fprintf(stdout, "Value entered is outside range (%0.2f - %0.2f)\n", in->min, in->max);
-			} else
+			} 
+			else
 				fputs("Invalid input.\n", stdout);
 		}
 	}
+	
 	// Free memory and return.
 	free(s);
 	return retVal;
@@ -129,15 +146,17 @@ bool getInput(input *in) {
  *             monthly payment (double).
  * returns:    New loan balance (double).
 **********************************************/
-double calcBalance(double balance, double interest, double payment) {
+double calcBalance(double balance, double interest, double payment) 
+{
 	// new balance = previous balance - payment + interest.
 	return (balance * (1. + interest / 1200.) - payment);
 }
 
 // Program starts here.
-int main(void) {
-	char *numPayment[3] = { "first", "second", "third" };
-	input loanAmount = { "Enter loan amount: ", 10, 1000000.00 },
+int main(void) 
+{
+	char	*numPayment[3] = { "first", "second", "third" };
+	input	loanAmount = { "Enter loan amount: ", 10, 1000000.00 },
 		interestRate = { "Enter interest rate: ", 5, 99.99 },
 		monthlyPayment = { "Enter monthly payment: ", 7, 9999.99 };
 
